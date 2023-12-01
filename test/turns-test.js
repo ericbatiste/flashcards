@@ -1,20 +1,25 @@
 const chai = require('chai');
 const expect = chai.expect;
-
+const testData = require('./data-test.js');
+const testQuestions = testData.testData;
 const { createCard } = require('../src/card');
 const { evaluateGuess } = require('../src/turns');
 
+
 describe('turn', () => {
+  beforeEach(() => {
+    return testCards = testQuestions.map(question => {
+      return createCard(question.id, question.question, question.answers, question.correctAnswer)
+   })
+  })
     it('should return correct if user guess matches correctAnswer', () => {
-      const card = createCard(1, 'What allows you to define a set of related information using key-value pairs?', ['object', 'array', 'function'], 'object');
-      const turn = evaluateGuess('object', card.correctAnswer);
+      const turn = evaluateGuess('sea otter', testCards[0].correctAnswer);
   
       expect(turn).to.equal('Correct!');
     });
     
     it('should return incorrect if user guess does not match correctAnswer', () => {
-      const card = createCard(1, 'What allows you to define a set of related information using key-value pairs?', ['object', 'array', 'function'], 'object');
-      const turn = evaluateGuess('array', card.correctAnswer);
+      const turn = evaluateGuess('pug', testCards[0].correctAnswer);
   
       expect(turn).to.equal('Incorrect!');
     });

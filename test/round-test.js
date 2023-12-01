@@ -1,20 +1,25 @@
 const chai = require('chai');
 const expect = chai.expect;
 
+const testData = require('./data-test.js');
+const testQuestions = testData.testData;
 const { createCard } = require('../src/card');
 const { createDeck } = require('../src/deck');
-const { evaluateGuess } = require("../src/turns");
 const { createRound, takeTurn, calculatePercentCorrect, endRound } = require('../src/round');
+
+
+beforeEach(() => {
+    return testCards = testQuestions.map(question => {
+       return createCard(question.id, question.question, question.answers, question.correctAnswer)
+    })
+})
 
 describe('round', () => {
     it('should create a round and its properties', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
 
-        expect(round.deck).to.deep.equal([card1, card2, card3]);
+        expect(round.deck).to.deep.equal(testCards);
         expect(round.currentCard).to.deep.equal({
             id: 1, 
             question: 'What is Robbie\'s favorite animal', 
@@ -26,10 +31,7 @@ describe('round', () => {
     })
 
     it('should give feedback if the guess is correct', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
 
         const turnOne = takeTurn('sea otter', round);
@@ -38,10 +40,7 @@ describe('round', () => {
     });
 
     it('should give feedback if the guess is incorrect', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
 
         const turnOne = takeTurn('pug', round);
@@ -50,10 +49,7 @@ describe('round', () => {
     });
 
     it('should increment the turn count regardless', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
 
         takeTurn('sea otter', round);
@@ -64,10 +60,7 @@ describe('round', () => {
     });
 
     it('should update currentCard', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
 
         takeTurn('sea otter', round);
@@ -78,10 +71,7 @@ describe('round', () => {
     })
     
     it('should store incorrect guesses', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
         
         takeTurn('sea otter', round);
@@ -92,10 +82,7 @@ describe('round', () => {
     })
 
     it('should return percentage correct after round', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
         
         takeTurn('sea otter', round);
@@ -108,10 +95,7 @@ describe('round', () => {
     })
 
     it('should let the player know when the game is over', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
         const round = createRound(deck);
         
         takeTurn('sea otter', round);

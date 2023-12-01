@@ -1,15 +1,19 @@
 const chai = require('chai');
 const expect = chai.expect;
-
+const testData = require('./data-test.js');
+const testQuestions = testData.testData;
 const { createCard } = require('../src/card');
 const { createDeck, countCards } = require('../src/deck');
 
+beforeEach(() => {
+    return testCards = testQuestions.map(question => {
+       return createCard(question.id, question.question, question.answers, question.correctAnswer)
+    })
+})
+
 describe('deck', () => {
     it('should know how many cards are in the deck', () => {
-        const card1 = createCard(1, 'What is Robbie\'s favorite animal', ['sea otter', 'pug', 'capybara'], 'sea otter');
-        const card2 = createCard(14, 'What organ is Khalid missing?', ['spleen', 'appendix', 'gallbladder'], 'gallbladder');
-        const card3 = createCard(12, 'What is Travis\'s middle name?', ['Lex', 'William', 'Fitzgerald'], 'Fitzgerald');
-        const deck = createDeck([card1, card2, card3]);
+        const deck = createDeck(testCards);
 
         countCards(deck);
 
